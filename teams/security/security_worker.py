@@ -15,7 +15,7 @@ channel.exchange_declare(exchange="coordinator", exchange_type="topic")
 
 # Declare a new queue
 # Durable flag is set so that messages are retained between restarts
-security_queue_name = "Security"
+security_queue_name = "security.high.accident"
 channel.queue_declare(queue=security_queue_name, durable=True)
 
 # Bind the queue to the exchange
