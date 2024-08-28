@@ -2,39 +2,41 @@ import pika
 import time
 import os
 
-# read rabbitmq connection url from environment variable
+# Read rabbitmq connection url from environment variable
 amqp_url = os.environ["AMQP_URL"]
 url_params = pika.URLParameters(amqp_url)
 
-# connect to rabbitmq
+# Connect to rabbitmq
 connection = pika.BlockingConnection(url_params)
-chan = connection.channel()
+channel = connection.channel()
 
-# declare a new queue
-# durable flag is set so that messages are retained
-# in the rabbitmq volume even between restarts
-chan.queue_declare(queue="hello", durable=True)
+# Declare the coordinator exchange
+channel.exchange_declare(exchange="coordinator", exchange_type="topic")
+
+# Declare a new queue
+# Durable flag is set so that messages are retained between restarts
+security_queue_name = "Security"
+channel.queue_declare(queue=security_queue_name, durable=True)
+
+# Bind the queue to the exchange
+channel.queue_bind(
+    exchange="coordinator", queue=security_queue_name, routing_key="high.accident"
+)
 
 
 def receive_msg(ch, method, properties, body):
-    """function to receive the message from rabbitmq
-    print it
-    sleep for 2 seconds
-    ack the message"""
-
     print("received msg : ", body.decode("utf-8"))
-    time.sleep(2)
     print("acking it")
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-# to make sure the consumer receives only one message at a time
+# Make sure the consumer receives only one message at a time
 # next message is received only after acking the previous one
-chan.basic_qos(prefetch_count=1)
+channel.basic_qos(prefetch_count=1)
 
-# define the queue consumption
-chan.basic_consume(queue="hello", on_message_callback=receive_msg)
+# Define the queue consumption
+channel.basic_consume(queue=security_queue_name, on_message_callback=receive_msg)
 
 print("Waiting to consume")
-# start consuming
-chan.start_consuming()
+# Start consuming
+channel.start_consuming()
