@@ -6,7 +6,7 @@ services:
       - "15672:15672"
 
   team_security:
-    build: ./teams/security
+    build: ./teams
     depends_on:
       - rabbitmq
     environment:
