@@ -17,6 +17,9 @@ async def consume(security_queue_name, channel, channel_number):
         print("processing message")
         async with message.process():
             print(f"Channel {channel_number}: Received {message.body.decode()}")
+            processing_time = 3
+            await asyncio.sleep(processing_time)
+            print("event handled")
 
     await queue.consume(on_message)
     await asyncio.Future()
