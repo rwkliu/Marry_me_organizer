@@ -1,42 +1,40 @@
-import pika
-import time
+import asyncio
+import aio_pika
 import os
 
-# Read rabbitmq connection url from environment variable
+
 amqp_url = os.environ["AMQP_URL"]
-url_params = pika.URLParameters(amqp_url)
-
-# Connect to rabbitmq
-connection = pika.BlockingConnection(url_params)
-channel = connection.channel()
-
-# Declare the coordinator exchange
-channel.exchange_declare(exchange="coordinator", exchange_type="topic")
-
-# Declare a new queue
-# Durable flag is set so that messages are retained between restarts
 security_queue_name = "security.high.accident"
-channel.queue_declare(queue=security_queue_name, durable=True)
-
-# Bind the queue to the exchange
-channel.queue_bind(
-    exchange="coordinator", queue=security_queue_name, routing_key="high.accident"
-)
 
 
-def receive_msg(ch, method, properties, body):
-    print("received msg : ", body.decode("utf-8"))
-    print("acking it")
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+async def consume(security_queue_name, channel_number):
+    print("Set up a connection")
+    connection = await aio_pika.connect_robust(amqp_url)
+    async with connection:
+        print("setting up a channel")
+        channel = await connection.channel()
+        await channel.declare_exchange("coordinator", "topic")
+        await channel.set_qos(prefetch_count=1)
+        queue = await channel.declare_queue(security_queue_name, durable=True)
+        await queue.bind("coordinator", "high.accident")
+
+        async def on_message(message: aio_pika.IncomingMessage):
+            print("processing message")
+            async with message.process():
+                print(f"Channel {channel_number}: Received {message.body.decode()}")
+
+        await queue.consume(on_message)
+        await asyncio.Future()
 
 
-# Make sure the consumer receives only one message at a time
-# next message is received only after acking the previous one
-channel.basic_qos(prefetch_count=1)
+async def main():
+    tasks = []
+    for i in range(3):
+        task = asyncio.create_task(consume(security_queue_name, i + 1))
+        tasks.append(task)
 
-# Define the queue consumption
-channel.basic_consume(queue=security_queue_name, on_message_callback=receive_msg)
+    await asyncio.gather(*tasks)
 
-print("Waiting to consume")
-# Start consuming
-channel.start_consuming()
+
+if __name__ == "__main__":
+    asyncio.run(main())
