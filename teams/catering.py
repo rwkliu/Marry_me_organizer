@@ -3,24 +3,32 @@ import time
 import os
 
 # Read rabbitmq connection url from environment variable
-amqp_url = os.environ["AMQP_URL"]
-url_params = pika.URLParameters(amqp_url)
+# amqp_url = os.environ["AMQP_URL"]
+# url_params = pika.URLParameters(amqp_url)
+params = pika.ConnectionParameters("localhost")
+exchange = "high"
+security_queue_name = "catering"
 
 # Connect to rabbitmq
-connection = pika.BlockingConnection(url_params)
+connection = pika.BlockingConnection(params)
 channel = connection.channel()
 
 # Declare the coordinator exchange
-channel.exchange_declare(exchange="coordinator", exchange_type="topic")
+channel.exchange_declare(exchange=exchange, exchange_type="topic")
 
 # Declare a new queue
 # Durable flag is set so that messages are retained between restarts
-security_queue_name = "security.high.accident"
 channel.queue_declare(queue=security_queue_name, durable=True)
 
 # Bind the queue to the exchange
 channel.queue_bind(
-    exchange="coordinator", queue=security_queue_name, routing_key="high.accident"
+    exchange=exchange, queue=security_queue_name, routing_key="bad_food.catering"
+)
+channel.queue_bind(
+    exchange=exchange, queue=security_queue_name, routing_key="music.catering"
+)
+channel.queue_bind(
+    exchange=exchange, queue=security_queue_name, routing_key="feeling_ill.catering"
 )
 
 
