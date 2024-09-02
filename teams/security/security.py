@@ -4,14 +4,16 @@ import os
 
 
 amqp_url = os.environ["AMQP_URL"]
-security_queue_name = "security.high.accident"
+security_queue_name = "security"
 
 
 async def consume(security_queue_name, channel, channel_number):
     print("setting up a channel")
-    await channel.declare_exchange("coordinator", "topic")
+    await channel.declare_exchange("high", "topic")
     queue = await channel.declare_queue(security_queue_name, durable=True)
-    await queue.bind("coordinator", "high.accident")
+    await queue.bind("high", "accident.security")
+    await queue.bind("high", "brawl.security")
+    await queue.bind("high", "not_on_list.security")
 
     async def on_message(message: aio_pika.IncomingMessage):
         print("processing message")
