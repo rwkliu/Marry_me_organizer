@@ -1,9 +1,12 @@
 import json
 
-file_name = "dataset_1.json"
-file_path = "./data/" + file_name
 
-with open(file_path) as file:
-    contents = json.load(file)
+def read_file(file_path):
+    with open(file_path) as file:
+        contents = json.load(file)
+    return contents
 
-print(contents[0]["id"])
+
+def sort_contents(unsorted):
+    sorted_contents = sorted(unsorted, key=lambda d: d["timestamp"])
+    return sorted_contents
