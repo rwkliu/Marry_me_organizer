@@ -19,3 +19,12 @@ services:
 
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+
+  team_cleanup:
+    build: ./teams/cleanup
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+    environment:
+      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
