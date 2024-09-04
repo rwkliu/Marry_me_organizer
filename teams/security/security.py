@@ -4,13 +4,13 @@ import os
 
 
 amqp_url = os.environ["AMQP_URL"]
-security_queue_name = "security"
+queue_name = "security"
 
 
-async def consume(security_queue_name, channel, channel_number):
+async def consume(queue_name, channel, channel_number):
     print("setting up a channel")
     await channel.declare_exchange("high", "topic")
-    queue = await channel.declare_queue(security_queue_name, durable=True)
+    queue = await channel.declare_queue(queue_name, durable=True)
     await queue.bind("high", "accident.security")
     await queue.bind("high", "brawl.security")
     await queue.bind("high", "not_on_list.security")
@@ -43,7 +43,7 @@ async def main():
     # Start a consumer for each channel
     tasks = []
     for i, channel in enumerate(channels):
-        task = asyncio.create_task(consume(security_queue_name, channel, i + 1))
+        task = asyncio.create_task(consume(queue_name, channel, i + 1))
         tasks.append(task)
 
     await asyncio.gather(*tasks)
