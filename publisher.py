@@ -30,14 +30,13 @@ for event in events:
     exchange = event["priority"].lower()
     routing_key = event_routing_key_table[event["event_type"]]
     description = event["description"]
-    if exchange == "high":
-        channel.basic_publish(
-            exchange=exchange,
-            routing_key=routing_key,
-            body=description,
-            properties=pika.BasicProperties(delivery_mode=2),
-        )
-        print("event sent: ", exchange, routing_key, description)
+    channel.basic_publish(
+        exchange=exchange,
+        routing_key=routing_key,
+        body=description,
+        properties=pika.BasicProperties(delivery_mode=2),
+    )
+    print("event sent: ", exchange, routing_key, description)
 
 channel.close()
 connection.close()
