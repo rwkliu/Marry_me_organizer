@@ -1,14 +1,17 @@
 import asyncio
 import aio_pika
 import os
-import argparse
 import json
 
 
 amqp_url = os.environ["AMQP_URL"]
+queue_name = os.environ["QUEUE_NAME"]
+num_channels = int(os.environ["NUM_CHANNELS"])
+exchange = os.environ["EXCHANGE"]
+bindings = json.loads(os.environ["QUEUE_BINDINGS"])
 
 
-async def consume(queue_name, channel, channel_number, exchange, bindings):
+async def consume(channel, channel_number):
     print("setting up a channel")
     await channel.declare_exchange(exchange, "topic")
     queue = await channel.declare_queue(queue_name, durable=True)
@@ -28,7 +31,7 @@ async def consume(queue_name, channel, channel_number, exchange, bindings):
     await asyncio.Future()
 
 
-async def main(queue_name, num_channels, exchange, bindings):
+async def main():
     # Establish a connection
     print("Set up a connection")
     connection = await aio_pika.connect_robust(amqp_url)
@@ -43,37 +46,11 @@ async def main(queue_name, num_channels, exchange, bindings):
     # Start a consumer for each channel
     tasks = []
     for i, channel in enumerate(channels):
-        task = asyncio.create_task(
-            consume(queue_name, channel, i + 1, exchange, bindings)
-        )
+        task = asyncio.create_task(consume(channel, i + 1))
         tasks.append(task)
 
     await asyncio.gather(*tasks)
 
 
-parser = argparse.ArgumentParser(description="Set up the consumer")
-parser.add_argument(
-    "--queue_name",
-    help="The name of the queue that the consumer will consume messages from.",
-)
-parser.add_argument(
-    "--channels", help="The number of channels (workers) over the connection", type=int
-)
-parser.add_argument(
-    "--exchange",
-    help="The name of the exchange. The exchange type will be a topic exchange",
-)
-parser.add_argument(
-    "--queue_bindings",
-    help="A list of queue bindings. The format of this argument shall be a list of dictionaries, \
-      where each dictionary contains the key-value pairs for the priority (low, medium, high) and the routing key",
-    type=str,
-)
-
 if __name__ == "__main__":
-    args = parser.parse_args()
-    queue_name = args.queue_name
-    num_channels = args.channels
-    exchange = args.exchange
-    bindings = json.loads(args.queue_bindings)
-    asyncio.run(main(queue_name, num_channels, exchange, bindings))
+    asyncio.run(main())
