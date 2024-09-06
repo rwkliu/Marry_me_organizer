@@ -24,6 +24,7 @@ services:
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "brawl.security"},{"priority": "high", "routing_key": "not_on_list.security"}]'
     restart: always
+    container_name: high_security
 
   high_cleanup:
     build: ./consumer
@@ -38,6 +39,7 @@ services:
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "dirty_table.cleanup"},{"priority": "high", "routing_key": "broken_items.cleanup"},{"priority": "high", "routing_key": "dirty_floor.cleanup"}]'
     restart: always
+    container_name: high_cleanup 
 
   high_catering:
     build: ./consumer
@@ -52,6 +54,7 @@ services:
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bad_food.catering"},{"priority": "high", "routing_key": "music.catering"},{"priority": "high", "routing_key": "feeling_ill.catering"}]'
     restart: always
+    container_name: high_catering
 
   high_officiant:
     build: ./consumer
@@ -66,6 +69,7 @@ services:
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bride.officiant"},{"priority": "high", "routing_key": "groom.officiant"}]'
     restart: always
+    container_name: high_officiant
 
   high_waiters:
     build: ./consumer
@@ -80,6 +84,7 @@ services:
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "broken_items.cleanup"}, {"priority": "high", "routing_key": "bad_food.catering"}]'
     restart: always
+    container_name: high_waiters
 
   medium_security:
     build: ./consumer
@@ -94,6 +99,7 @@ services:
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "brawl.security"},{"priority": "medium", "routing_key": "not_on_list.security"}]'
     restart: always
+    container_name: medium_security
 
   medium_cleanup:
     build: ./consumer
@@ -108,6 +114,7 @@ services:
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "dirty_table.cleanup"},{"priority": "medium", "routing_key": "broken_items.cleanup"},{"priority": "medium", "routing_key": "dirty_floor.cleanup"}]'
     restart: always
+    container_name: medium_cleanup
 
   medium_catering:
     build: ./consumer
@@ -122,6 +129,7 @@ services:
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bad_food.catering"},{"priority": "medium", "routing_key": "music.catering"},{"priority": "medium", "routing_key": "feeling_ill.catering"}]'
     restart: always
+    container_name: medium_catering
 
   medium_officiant:
     build: ./consumer
@@ -136,6 +144,7 @@ services:
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bride.officiant"},{"priority": "medium", "routing_key": "groom.officiant"}]'
     restart: always
+    container_name: medium_officiant
 
   medium_waiters:
     build: ./consumer
@@ -150,6 +159,7 @@ services:
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "broken_items.cleanup"}, {"priority": "medium", "routing_key": "bad_food.catering"}]'
     restart: always
+    container_name: medium_waiters
 
   low_security:
     build: ./consumer
@@ -164,6 +174,7 @@ services:
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "brawl.security"},{"priority": "low", "routing_key": "not_on_list.security"}]'
     restart: always
+    container_name: low_security
 
   low_cleanup:
     build: ./consumer
@@ -178,6 +189,7 @@ services:
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "dirty_table.cleanup"},{"priority": "low", "routing_key": "broken_items.cleanup"},{"priority": "low", "routing_key": "dirty_floor.cleanup"}]'
     restart: always
+    container_name: low_cleanup
 
   low_catering:
     build: ./consumer
@@ -192,6 +204,7 @@ services:
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bad_food.catering"},{"priority": "low", "routing_key": "music.catering"},{"priority": "low", "routing_key": "feeling_ill.catering"}]'
     restart: always
+    container_name: low_catering
 
   low_officiant:
     build: ./consumer
@@ -206,6 +219,7 @@ services:
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bride.officiant"},{"priority": "low", "routing_key": "groom.officiant"}]'
     restart: always
+    container_name: low_officiant
 
   low_waiters:
     build: ./consumer
@@ -220,3 +234,4 @@ services:
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "broken_items.cleanup"}, {"priority": "low", "routing_key": "bad_food.catering"}]'
     restart: always
+    container_name: low_waiters
