@@ -11,17 +11,18 @@ exchange = os.environ["EXCHANGE"]
 bindings = json.loads(os.environ["QUEUE_BINDINGS"])
 
 
+async def on_message(message: aio_pika.IncomingMessage):
+    print("processing message")
+    async with message.process():
+        print(f"Received {message.body.decode()}")
+        processing_time = 3
+        await asyncio.sleep(processing_time)
+        print("event handled")
+
+
 async def consume(channel, channel_number):
     print("setting up a channel")
     await channel.declare_exchange(exchange, "topic")
-
-    async def on_message(message: aio_pika.IncomingMessage):
-        print("processing message")
-        async with message.process():
-            print(f"Channel {channel_number}: Received {message.body.decode()}")
-            processing_time = 3
-            await asyncio.sleep(processing_time)
-            print("event handled")
 
     queues = []
     for i, binding in enumerate(bindings):
