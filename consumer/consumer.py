@@ -5,7 +5,7 @@ import json
 
 
 amqp_url = os.environ["AMQP_URL"]
-queue_name = os.environ["QUEUE_NAME"]
+queue_names = json.loads(os.environ["QUEUE_NAMES"])
 num_channels = int(os.environ["NUM_CHANNELS"])
 exchange = os.environ["EXCHANGE"]
 bindings = json.loads(os.environ["QUEUE_BINDINGS"])
@@ -14,9 +14,9 @@ bindings = json.loads(os.environ["QUEUE_BINDINGS"])
 async def consume(channel, channel_number):
     print("setting up a channel")
     await channel.declare_exchange(exchange, "topic")
-    queue = await channel.declare_queue(queue_name, durable=True)
 
-    for binding in bindings:
+    for i, binding in enumerate(bindings):
+        queue = await channel.declare_queue(queue_names[i], durable=True)
         await queue.bind(binding["priority"], binding["routing_key"])
 
     async def on_message(message: aio_pika.IncomingMessage):
