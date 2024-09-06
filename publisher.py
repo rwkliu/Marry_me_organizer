@@ -29,7 +29,7 @@ channel.exchange_declare(exchange="low", exchange_type="topic")
 for event in events:
     exchange = event["priority"].lower()
     routing_key = event_routing_key_table[event["event_type"]]
-    description = event["description"]
+    description = event["description"] + " " + event["timestamp"]
     channel.basic_publish(
         exchange=exchange,
         routing_key=routing_key,
