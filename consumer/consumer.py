@@ -4,20 +4,48 @@ import os
 import json
 
 
+# Environment variables
 amqp_url = os.environ["AMQP_URL"]
 queue_names = json.loads(os.environ["QUEUE_NAMES"])
 num_channels = int(os.environ["NUM_CHANNELS"])
 exchange = os.environ["EXCHANGE"]
 bindings = json.loads(os.environ["QUEUE_BINDINGS"])
 
+# Constants
+PROCESSING_TIME = 3
+ROUTINE_START_MESSAGE = "Start_standard_routine"
+
+# Flags
+routine_active = False
+
+
+async def start_routine():
+    global routine_active
+
+    while True:
+        print("Pausing message consumption for 20 seconds")
+        routine_active = True
+        await asyncio.sleep(20)
+
+        print("Resuming message consumption for 5 seconds")
+        routine_active = False
+        await asyncio.sleep(5)
+
 
 async def on_message(message: aio_pika.IncomingMessage):
-    print("processing message")
-    async with message.process():
-        print(f"Received {message.body.decode()}")
-        processing_time = 3
-        await asyncio.sleep(processing_time)
-        print("event handled")
+    global routine_active
+
+    if not routine_active:
+        print("processing message")
+        async with message.process():
+            message_content = message.body.decode()
+            print(f"Received {message_content}")
+            await asyncio.sleep(PROCESSING_TIME)
+            print("event handled")
+
+            if message_content == ROUTINE_START_MESSAGE:
+                print("Starting routine")
+                await start_routine()
 
 
 async def consume(channel, channel_number):
