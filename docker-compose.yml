@@ -72,11 +72,11 @@ services:
     container_name: high_officiant
 
   high_waiters:
-    build: ./waiter
+    build: ./consumer
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: ['python', 'waiter.py']
+    command: ['python', 'consumer.py']
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
       QUEUE_NAMES: '["high_security", "high_cleanup", "high_catering"]'
@@ -147,11 +147,11 @@ services:
     container_name: medium_officiant
 
   medium_waiters:
-    build: ./waiter
+    build: ./consumer
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: ['python', 'waiter.py']
+    command: ['python', 'consumer.py']
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
       QUEUE_NAMES: '["medium_security", "medium_cleanup", "medium_catering"]'
@@ -222,11 +222,11 @@ services:
     container_name: low_officiant
 
   low_waiters:
-    build: ./waiter
+    build: ./consumer
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: ['python', 'waiter.py']
+    command: ['python', 'consumer.py']
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
       QUEUE_NAMES: '["low_security", "low_cleanup", "low_catering"]'
