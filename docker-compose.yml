@@ -4,3 +4,10 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  team_security:
+    build: ./teams/security
+    depends_on:
+      - rabbitmq
+    environment:
+      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
