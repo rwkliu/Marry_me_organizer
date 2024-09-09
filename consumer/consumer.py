@@ -17,35 +17,42 @@ ROUTINE_START_MESSAGE = "Start_standard_routine"
 
 # Flags
 routine_active = False
+pause_event = asyncio.Event()
+
+# Set the event (True) so messages can be consumed immediately
+pause_event.set()
 
 
 async def start_routine():
-    global routine_active
+    global pause_event, routine_active
+
+    routine_active = True
 
     while True:
         print("Pausing message consumption for 20 seconds")
-        routine_active = True
+        pause_event.clear()
         await asyncio.sleep(20)
 
         print("Resuming message consumption for 5 seconds")
-        routine_active = False
+        pause_event.set()
         await asyncio.sleep(5)
 
 
 async def on_message(message: aio_pika.IncomingMessage):
     global routine_active
 
-    if not routine_active:
-        print("processing message")
-        async with message.process():
-            message_content = message.body.decode()
-            print(f"Received {message_content}")
-            await asyncio.sleep(PROCESSING_TIME)
-            print("event handled")
+    print("processing message")
+    message_content = message.body.decode()
+    print(f"Received {message_content}")
 
-            if message_content == ROUTINE_START_MESSAGE:
-                print("Starting routine")
-                await start_routine()
+    if message_content == ROUTINE_START_MESSAGE and routine_active == False:
+        print("Starting routine")
+        asyncio.create_task(start_routine())
+
+    # Process the message
+    await asyncio.sleep(PROCESSING_TIME)
+    print("event handled")
+    await message.ack()
 
 
 async def consume(channel, channel_number):
@@ -56,8 +63,10 @@ async def consume(channel, channel_number):
         queue = await channel.declare_queue(queue_name, durable=True)
         await queue.bind(binding["priority"], binding["routing_key"])
 
-    await queue.consume(on_message)
-    await asyncio.Future()
+    async with queue.iterator() as queue_iter:
+        async for message in queue_iter:
+            await pause_event.wait()  # Wait for the available window
+            await on_message(message)
 
 
 async def main():
