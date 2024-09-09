@@ -19,7 +19,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["high_security", "high_security", "high_security"]' 
+      QUEUE_NAME: 'high_security' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "brawl.security"},{"priority": "high", "routing_key": "not_on_list.security"}]'
@@ -34,7 +34,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["high_cleanup", "high_cleanup", "high_cleanup"]' 
+      QUEUE_NAME: 'high_cleanup' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "dirty_table.cleanup"},{"priority": "high", "routing_key": "broken_items.cleanup"},{"priority": "high", "routing_key": "dirty_floor.cleanup"}]'
@@ -49,7 +49,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["high_catering", "high_catering", "high_catering"]' 
+      QUEUE_NAME: 'high_catering' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bad_food.catering"},{"priority": "high", "routing_key": "music.catering"},{"priority": "high", "routing_key": "feeling_ill.catering"}]'
@@ -64,7 +64,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["high_officiant", "high_officiant"]' 
+      QUEUE_NAME: 'high_officiant' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bride.officiant"},{"priority": "high", "routing_key": "groom.officiant"}]'
@@ -72,14 +72,14 @@ services:
     container_name: high_officiant
 
   high_waiters:
-    build: ./waiter
+    build: ./consumer
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: ['python', 'waiter.py']
+    command: ['python', 'consumer.py']
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["high_security", "high_cleanup", "high_catering"]'
+      QUEUE_NAME: 'high_waiter'
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "broken_items.cleanup"}, {"priority": "high", "routing_key": "bad_food.catering"}]'
@@ -94,7 +94,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["medium_security", "medium_security", "medium_security"]' 
+      QUEUE_NAME: 'medium_security' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "brawl.security"},{"priority": "medium", "routing_key": "not_on_list.security"}]'
@@ -109,7 +109,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["medium_cleanup", "medium_cleanup", "medium_cleanup"]' 
+      QUEUE_NAME: 'medium_cleanup' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "dirty_table.cleanup"},{"priority": "medium", "routing_key": "broken_items.cleanup"},{"priority": "medium", "routing_key": "dirty_floor.cleanup"}]'
@@ -124,7 +124,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["medium_catering", "medium_catering", "medium_catering"]' 
+      QUEUE_NAME: 'medium_catering' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bad_food.catering"},{"priority": "medium", "routing_key": "music.catering"},{"priority": "medium", "routing_key": "feeling_ill.catering"}]'
@@ -139,7 +139,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["medium_officiant", "medium_officiant"]' 
+      QUEUE_NAME: 'medium_officiant' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bride.officiant"},{"priority": "medium", "routing_key": "groom.officiant"}]'
@@ -147,14 +147,14 @@ services:
     container_name: medium_officiant
 
   medium_waiters:
-    build: ./waiter
+    build: ./consumer
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: ['python', 'waiter.py']
+    command: ['python', 'consumer.py']
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["medium_security", "medium_cleanup", "medium_catering"]'
+      QUEUE_NAME: 'medium_waiter'
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "broken_items.cleanup"}, {"priority": "medium", "routing_key": "bad_food.catering"}]'
@@ -169,7 +169,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["low_security", "low_security", "low_security"]' 
+      QUEUE_NAME: 'low_security' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "brawl.security"},{"priority": "low", "routing_key": "not_on_list.security"}]'
@@ -184,7 +184,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["low_cleanup", "low_cleanup", "low_cleanup"]' 
+      QUEUE_NAME: 'low_cleanup' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "dirty_table.cleanup"},{"priority": "low", "routing_key": "broken_items.cleanup"},{"priority": "low", "routing_key": "dirty_floor.cleanup"}]'
@@ -199,7 +199,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["low_catering", "low_catering", "low_catering"]' 
+      QUEUE_NAME: 'low_catering' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bad_food.catering"},{"priority": "low", "routing_key": "music.catering"},{"priority": "low", "routing_key": "feeling_ill.catering"}]'
@@ -214,7 +214,7 @@ services:
     command: ["python", "consumer.py"]
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["low_officiant", "low_officiant"]' 
+      QUEUE_NAME: 'low_officiant' 
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bride.officiant"},{"priority": "low", "routing_key": "groom.officiant"}]'
@@ -222,14 +222,14 @@ services:
     container_name: low_officiant
 
   low_waiters:
-    build: ./waiter
+    build: ./consumer
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: ['python', 'waiter.py']
+    command: ['python', 'consumer.py']
     environment:
       AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAMES: '["low_security", "low_cleanup", "low_catering"]'
+      QUEUE_NAME: 'low_waiter'
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "broken_items.cleanup"}, {"priority": "low", "routing_key": "bad_food.catering"}]'
