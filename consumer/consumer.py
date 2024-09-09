@@ -10,10 +10,11 @@ queue_name = os.environ["QUEUE_NAME"]
 num_channels = int(os.environ["NUM_CHANNELS"])
 exchange = os.environ["EXCHANGE"]
 bindings = json.loads(os.environ["QUEUE_BINDINGS"])
+routine = json.loads(os.environ["ROUTINE"])
 
 # Constants
 PROCESSING_TIME = 3
-ROUTINE_START_MESSAGE = "Start_standard_routine"
+ROUTINE_START_MESSAGE = "Start_routine"
 
 # Flags
 routine_active = False
@@ -27,15 +28,17 @@ async def start_routine():
     global pause_event, routine_active
 
     routine_active = True
+    time_unavailable = routine["unavailable"]
+    time_available = routine["available"]
 
     while True:
-        print("Pausing message consumption for 20 seconds")
+        print(f"Pausing message consumption for {time_unavailable} seconds")
         pause_event.clear()
-        await asyncio.sleep(20)
+        await asyncio.sleep(time_unavailable)
 
-        print("Resuming message consumption for 5 seconds")
+        print(f"Resuming message consumption for {time_available} seconds")
         pause_event.set()
-        await asyncio.sleep(5)
+        await asyncio.sleep(time_available)
 
 
 async def on_message(message: aio_pika.IncomingMessage):
