@@ -23,6 +23,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "brawl.security"},{"priority": "high", "routing_key": "not_on_list.security"}]'
+      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
     restart: always
     container_name: high_security
 
@@ -38,6 +39,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "dirty_table.cleanup"},{"priority": "high", "routing_key": "broken_items.cleanup"},{"priority": "high", "routing_key": "dirty_floor.cleanup"}]'
+      ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
     restart: always
     container_name: high_cleanup 
 
@@ -53,6 +55,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bad_food.catering"},{"priority": "high", "routing_key": "music.catering"},{"priority": "high", "routing_key": "feeling_ill.catering"}]'
+      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
     restart: always
     container_name: high_catering
 
@@ -68,6 +71,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bride.officiant"},{"priority": "high", "routing_key": "groom.officiant"}]'
+      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
     restart: always
     container_name: high_officiant
 
@@ -83,6 +87,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "broken_items.cleanup"}, {"priority": "high", "routing_key": "bad_food.catering"}]'
+      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
     restart: always
     container_name: high_waiters
 
@@ -98,6 +103,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "brawl.security"},{"priority": "medium", "routing_key": "not_on_list.security"}]'
+      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
     restart: always
     container_name: medium_security
 
@@ -113,6 +119,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "dirty_table.cleanup"},{"priority": "medium", "routing_key": "broken_items.cleanup"},{"priority": "medium", "routing_key": "dirty_floor.cleanup"}]'
+      ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
     restart: always
     container_name: medium_cleanup
 
@@ -128,6 +135,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bad_food.catering"},{"priority": "medium", "routing_key": "music.catering"},{"priority": "medium", "routing_key": "feeling_ill.catering"}]'
+      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
     restart: always
     container_name: medium_catering
 
@@ -143,6 +151,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bride.officiant"},{"priority": "medium", "routing_key": "groom.officiant"}]'
+      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
     restart: always
     container_name: medium_officiant
 
@@ -158,6 +167,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'medium'
       QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "broken_items.cleanup"}, {"priority": "medium", "routing_key": "bad_food.catering"}]'
+      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
     restart: always
     container_name: medium_waiters
 
@@ -173,6 +183,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "brawl.security"},{"priority": "low", "routing_key": "not_on_list.security"}]'
+      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
     restart: always
     container_name: low_security
 
@@ -188,6 +199,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "dirty_table.cleanup"},{"priority": "low", "routing_key": "broken_items.cleanup"},{"priority": "low", "routing_key": "dirty_floor.cleanup"}]'
+      ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
     restart: always
     container_name: low_cleanup
 
@@ -203,6 +215,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bad_food.catering"},{"priority": "low", "routing_key": "music.catering"},{"priority": "low", "routing_key": "feeling_ill.catering"}]'
+      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
     restart: always
     container_name: low_catering
 
@@ -218,6 +231,7 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bride.officiant"},{"priority": "low", "routing_key": "groom.officiant"}]'
+      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
     restart: always
     container_name: low_officiant
 
@@ -233,5 +247,6 @@ services:
       NUM_CHANNELS: '3'
       EXCHANGE: 'low'
       QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "broken_items.cleanup"}, {"priority": "low", "routing_key": "bad_food.catering"}]'
+      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
     restart: always
     container_name: low_waiters
