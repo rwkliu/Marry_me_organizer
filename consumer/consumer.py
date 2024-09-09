@@ -48,10 +48,6 @@ async def on_message(message: aio_pika.IncomingMessage):
     message_content = message.body.decode()
     print(f"Received {message_content}")
 
-    if message_content == ROUTINE_START_MESSAGE and routine_active == False:
-        print("Starting routine")
-        asyncio.create_task(start_routine())
-
     # Process the message
     await asyncio.sleep(PROCESSING_TIME)
     print("event handled")
@@ -65,6 +61,10 @@ async def consume(channel, channel_number):
     for binding in bindings:
         queue = await channel.declare_queue(queue_name, durable=True)
         await queue.bind(binding["priority"], binding["routing_key"])
+
+    if routine_active == False:
+        print("Starting routine")
+        asyncio.create_task(start_routine())
 
     async with queue.iterator() as queue_iter:
         async for message in queue_iter:
