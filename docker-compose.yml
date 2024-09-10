@@ -11,21 +11,21 @@ services:
       retries: 5
       start_period: 10s
 
-  high_security:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'high_security' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'high'
-      QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "brawl.security"},{"priority": "high", "routing_key": "not_on_list.security"}]'
-      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
-    restart: always
-    container_name: high_security
+  # high_security:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'high_security' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'high'
+  #     QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "brawl.security"},{"priority": "high", "routing_key": "not_on_list.security"}]'
+  #     ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
+  #   restart: always
+  #   container_name: high_security
 
   high_cleanup:
     build: ./consumer
@@ -40,213 +40,214 @@ services:
       EXCHANGE: 'high'
       QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "dirty_table.cleanup"},{"priority": "high", "routing_key": "broken_items.cleanup"},{"priority": "high", "routing_key": "dirty_floor.cleanup"}]'
       ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
+      CALLBACK_QUEUE_NAME: "callback"
     restart: always
     container_name: high_cleanup 
 
-  high_catering:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'high_catering' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'high'
-      QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bad_food.catering"},{"priority": "high", "routing_key": "music.catering"},{"priority": "high", "routing_key": "feeling_ill.catering"}]'
-      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
-    restart: always
-    container_name: high_catering
+  # high_catering:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'high_catering' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'high'
+  #     QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bad_food.catering"},{"priority": "high", "routing_key": "music.catering"},{"priority": "high", "routing_key": "feeling_ill.catering"}]'
+  #     ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
+  #   restart: always
+  #   container_name: high_catering
 
-  high_officiant:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'high_officiant' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'high'
-      QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bride.officiant"},{"priority": "high", "routing_key": "groom.officiant"}]'
-      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
-    restart: always
-    container_name: high_officiant
+  # high_officiant:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'high_officiant' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'high'
+  #     QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "bride.officiant"},{"priority": "high", "routing_key": "groom.officiant"}]'
+  #     ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
+  #   restart: always
+  #   container_name: high_officiant
 
-  high_waiters:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ['python', 'consumer.py']
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'high_waiter'
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'high'
-      QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "broken_items.cleanup"}, {"priority": "high", "routing_key": "bad_food.catering"}]'
-      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
-    restart: always
-    container_name: high_waiters
+  # high_waiters:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ['python', 'consumer.py']
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'high_waiter'
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'high'
+  #     QUEUE_BINDINGS: '[{"priority": "high", "routing_key": "accident.security"},{"priority": "high", "routing_key": "broken_items.cleanup"}, {"priority": "high", "routing_key": "bad_food.catering"}]'
+  #     ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
+  #   restart: always
+  #   container_name: high_waiters
 
-  medium_security:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'medium_security' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'medium'
-      QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "brawl.security"},{"priority": "medium", "routing_key": "not_on_list.security"}]'
-      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
-    restart: always
-    container_name: medium_security
+  # medium_security:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'medium_security' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'medium'
+  #     QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "brawl.security"},{"priority": "medium", "routing_key": "not_on_list.security"}]'
+  #     ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
+  #   restart: always
+  #   container_name: medium_security
 
-  medium_cleanup:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'medium_cleanup' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'medium'
-      QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "dirty_table.cleanup"},{"priority": "medium", "routing_key": "broken_items.cleanup"},{"priority": "medium", "routing_key": "dirty_floor.cleanup"}]'
-      ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
-    restart: always
-    container_name: medium_cleanup
+  # medium_cleanup:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'medium_cleanup' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'medium'
+  #     QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "dirty_table.cleanup"},{"priority": "medium", "routing_key": "broken_items.cleanup"},{"priority": "medium", "routing_key": "dirty_floor.cleanup"}]'
+  #     ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
+  #   restart: always
+  #   container_name: medium_cleanup
 
-  medium_catering:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'medium_catering' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'medium'
-      QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bad_food.catering"},{"priority": "medium", "routing_key": "music.catering"},{"priority": "medium", "routing_key": "feeling_ill.catering"}]'
-      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
-    restart: always
-    container_name: medium_catering
+  # medium_catering:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'medium_catering' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'medium'
+  #     QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bad_food.catering"},{"priority": "medium", "routing_key": "music.catering"},{"priority": "medium", "routing_key": "feeling_ill.catering"}]'
+  #     ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
+  #   restart: always
+  #   container_name: medium_catering
 
-  medium_officiant:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'medium_officiant' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'medium'
-      QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bride.officiant"},{"priority": "medium", "routing_key": "groom.officiant"}]'
-      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
-    restart: always
-    container_name: medium_officiant
+  # medium_officiant:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'medium_officiant' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'medium'
+  #     QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "bride.officiant"},{"priority": "medium", "routing_key": "groom.officiant"}]'
+  #     ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
+  #   restart: always
+  #   container_name: medium_officiant
 
-  medium_waiters:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ['python', 'consumer.py']
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'medium_waiter'
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'medium'
-      QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "broken_items.cleanup"}, {"priority": "medium", "routing_key": "bad_food.catering"}]'
-      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
-    restart: always
-    container_name: medium_waiters
+  # medium_waiters:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ['python', 'consumer.py']
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'medium_waiter'
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'medium'
+  #     QUEUE_BINDINGS: '[{"priority": "medium", "routing_key": "accident.security"},{"priority": "medium", "routing_key": "broken_items.cleanup"}, {"priority": "medium", "routing_key": "bad_food.catering"}]'
+  #     ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
+  #   restart: always
+  #   container_name: medium_waiters
 
-  low_security:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'low_security' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'low'
-      QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "brawl.security"},{"priority": "low", "routing_key": "not_on_list.security"}]'
-      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
-    restart: always
-    container_name: low_security
+  # low_security:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'low_security' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'low'
+  #     QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "brawl.security"},{"priority": "low", "routing_key": "not_on_list.security"}]'
+  #     ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
+  #   restart: always
+  #   container_name: low_security
 
-  low_cleanup:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'low_cleanup' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'low'
-      QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "dirty_table.cleanup"},{"priority": "low", "routing_key": "broken_items.cleanup"},{"priority": "low", "routing_key": "dirty_floor.cleanup"}]'
-      ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
-    restart: always
-    container_name: low_cleanup
+  # low_cleanup:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'low_cleanup' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'low'
+  #     QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "dirty_table.cleanup"},{"priority": "low", "routing_key": "broken_items.cleanup"},{"priority": "low", "routing_key": "dirty_floor.cleanup"}]'
+  #     ROUTINE: '{"routine": "intermittent", "unavailable": 5, "available": 5}'
+  #   restart: always
+  #   container_name: low_cleanup
 
-  low_catering:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'low_catering' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'low'
-      QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bad_food.catering"},{"priority": "low", "routing_key": "music.catering"},{"priority": "low", "routing_key": "feeling_ill.catering"}]'
-      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
-    restart: always
-    container_name: low_catering
+  # low_catering:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'low_catering' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'low'
+  #     QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bad_food.catering"},{"priority": "low", "routing_key": "music.catering"},{"priority": "low", "routing_key": "feeling_ill.catering"}]'
+  #     ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
+  #   restart: always
+  #   container_name: low_catering
 
-  low_officiant:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ["python", "consumer.py"]
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'low_officiant' 
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'low'
-      QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bride.officiant"},{"priority": "low", "routing_key": "groom.officiant"}]'
-      ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
-    restart: always
-    container_name: low_officiant
+  # low_officiant:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ["python", "consumer.py"]
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'low_officiant' 
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'low'
+  #     QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "bride.officiant"},{"priority": "low", "routing_key": "groom.officiant"}]'
+  #     ROUTINE: '{"routine": "concentrated", "unavailable": 60, "available": 60}'
+  #   restart: always
+  #   container_name: low_officiant
 
-  low_waiters:
-    build: ./consumer
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    command: ['python', 'consumer.py']
-    environment:
-      AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
-      QUEUE_NAME: 'low_waiter'
-      NUM_CHANNELS: '3'
-      EXCHANGE: 'low'
-      QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "broken_items.cleanup"}, {"priority": "low", "routing_key": "bad_food.catering"}]'
-      ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
-    restart: always
-    container_name: low_waiters
+  # low_waiters:
+  #   build: ./consumer
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   command: ['python', 'consumer.py']
+  #   environment:
+  #     AMQP_URL: 'amqp://rabbitmq?connection_attempts=10&retry_delay=5'
+  #     QUEUE_NAME: 'low_waiter'
+  #     NUM_CHANNELS: '3'
+  #     EXCHANGE: 'low'
+  #     QUEUE_BINDINGS: '[{"priority": "low", "routing_key": "accident.security"},{"priority": "low", "routing_key": "broken_items.cleanup"}, {"priority": "low", "routing_key": "bad_food.catering"}]'
+  #     ROUTINE: '{"routine": "standard", "unavailable": 20, "available": 5}'
+  #   restart: always
+  #   container_name: low_waiters
