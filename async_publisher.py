@@ -23,7 +23,7 @@ async def publish():
 
     await callback_queue.consume(on_response)
 
-    message_body = f"event: high priority cleanup {correlation_id}"
+    message_body = f"event: high priority cleanup"
     print(f"sending event: {message_body}")
     await exchange.publish(
         aio_pika.Message(

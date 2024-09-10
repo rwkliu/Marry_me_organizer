@@ -11,6 +11,7 @@ num_channels = int(os.environ["NUM_CHANNELS"])
 exchange = os.environ["EXCHANGE"]
 bindings = json.loads(os.environ["QUEUE_BINDINGS"])
 routine = json.loads(os.environ["ROUTINE"])
+callback_queue_name = os.environ["CALLBACK_QUEUE_NAME"]
 
 # Constants
 PROCESSING_TIME = 3
@@ -41,7 +42,23 @@ async def start_routine():
         await asyncio.sleep(time_available)
 
 
-async def on_message(message: aio_pika.IncomingMessage):
+async def send_callback_message(channel, message_body, correlation_id):
+    callback_exchange = await channel.declare_exchange(
+        exchange, aio_pika.ExchangeType.TOPIC
+    )
+
+    callback_message = f"Event handled: {message_body}"
+
+    await callback_exchange.publish(
+        aio_pika.Message(body=callback_message.encode(), correlation_id=correlation_id),
+        routing_key=callback_queue_name,
+    )
+    print(
+        f"Sent callback message: {callback_message} with correlation ID: {correlation_id}"
+    )
+
+
+async def on_message(channel, message: aio_pika.IncomingMessage):
     global routine_active
 
     print("processing message")
@@ -51,6 +68,11 @@ async def on_message(message: aio_pika.IncomingMessage):
     # Process the message
     await asyncio.sleep(PROCESSING_TIME)
     print("event handled")
+
+    # Send a callback message
+    await send_callback_message(channel, message_content, message.correlation_id)
+
+    # Acknowledge the message
     await message.ack()
 
 
@@ -69,7 +91,7 @@ async def consume(channel, channel_number):
     async with queue.iterator() as queue_iter:
         async for message in queue_iter:
             await pause_event.wait()  # Wait for the available window
-            await on_message(message)
+            await on_message(channel, message)
 
 
 async def main():
